@@ -66,7 +66,7 @@ jobs:
 #env proxy to point back to the proxy configured in the previous step. this is an environment variable opposed to the stored secrets that the API id and key need to be stored as, as it's written.
     - name: Run Veracode Upload and Scan
       run: |
-        java -jar pipeline-scan.jar --veracode_api_id "${{secrets.VERACODE_API_ID}}" --veracode_api_key "${{secrets.VERACODE_API_KEY}}" --fail_on_severity="Very High, High" --file veracode-scan-target.zip --project_name=mycustomapp --app_id=2157406 -phost 123.231.56.23 -pport 1234 -puser testabc -ppassword helloyou  --verbose=true
+        java -jar pipeline-scan.jar --veracode_api_id "${{secrets.VERACODE_API_ID}}" --veracode_api_key "${{secrets.VERACODE_API_KEY}}" --fail_on_severity="Very High, High" --file veracode-scan-target.zip --project_name=mycustomapp --app_id=2157406 --phost=123.231.56.23 --pport=1234 --puser=testabc --ppassword=helloyou  --verbose=true
         # java -jar veracode-wrapper.jar -action uploadandscan -vid ${{ secrets.VERACODE_API_ID }} -vkey ${{ secrets.VERACODE_API_KEY }} -appname myapp -createprofile true -criticality High -version ${{ github.sha }} -filepath ./
       # env:
       #   https_proxy: user1:passw0rd@123.231.56.23:1234
