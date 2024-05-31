@@ -42,12 +42,32 @@ jobs:
     # download the Veracode Static Analysis Pipeline scan jar
     - run: curl --silent --show-error --fail -O https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
     - run: unzip -o pipeline-scan-LATEST.zip
+#downloading the API wrapper, I updated this to be the most up to date version. It'll output as "veracode-wrapper.jar" 
+    - name: Download Veracode Java API Wrapper
+      run: wget https://repo1.maven.org/maven2/com/veracode/vosp/api/wrapper/vosp-api-wrapper-java/24.4.13.0/vosp-api-wrapper-java-24.4.13.0.jar -O veracode-wrapper.jar
 
+#this is for your proxy settings which we should be able to pass through to the veracode command. Configure accordingly and be sure the environment variable listed is created. 
+    - name: Set up Proxy Environment Variable
+      run: |
+        echo "https_proxy=http://127.0.0.1:8080" >> $GITHUB_ENV
     - uses: actions/setup-java@v3
       with:
-        java-version: 8
-        distribution: 'temurin'
-    - run: java -jar pipeline-scan.jar --veracode_api_id "${{secrets.VERACODE_API_ID}}" --veracode_api_key "${{secrets.VERACODE_API_KEY}}" --fail_on_severity="Very High, High" --file veracode-scan-target.zip --verbose=true #-appname myapp -createprofile true
+        java-version: 11
+        # distribution: 'temurin'
+   #calling on the veracode-wrapper.jar
+#vid and vkey are variables that need to be configured as secrets in GH. You can find these on the Veracode platform home page. There is a workflow button on the left "API Credentials". You can swap out the variable name and customize, you know how variables work.
+#appname is the name of the app as you want to see it in the platform
+#createprofile, leave that on "true". If it doesn't exist, it will be created. If it does exist, the scan will be mapped to the correct profile. 
+#Criticality, we need this for the "action" listed. 
+#version is the scan name, could be a build number or the in this case, the sha string.
+#filepath, where is the compiled artifact we're scanning. 
+#env proxy to point back to the proxy configured in the previous step. this is an environment variable opposed to the stored secrets that the API id and key need to be stored as, as it's written.
+    - name: Run Veracode Upload and Scan
+      run: |
+        java -jar veracode-wrapper.jar -action uploadandscan -vid ${{ secrets.VERACODE_API_ID }} -vkey ${{ secrets.VERACODE_API_KEY }} -appname myapp -createprofile true -criticality High -version ${{ github.sha }} -filepath ./
+      env:
+        https_proxy: ${{ env.https_proxy }}
+    # - run: java -jar pipeline-scan.jar --veracode_api_id "${{secrets.VERACODE_API_ID}}" --veracode_api_key "${{secrets.VERACODE_API_KEY}}" --fail_on_severity="Very High, High" --file veracode-scan-target.zip --verbose=true #-appname myapp -createprofile true
       continue-on-error: true
     - name: Convert pipeline scan output to SARIF format
       id: convert
