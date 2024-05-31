@@ -44,7 +44,9 @@ jobs:
     - run: unzip -o pipeline-scan-LATEST.zip
 #downloading the API wrapper, I updated this to be the most up to date version. It'll output as "veracode-wrapper.jar" 
     - name: Download Veracode Java API Wrapper
-      run: wget https://repo1.maven.org/maven2/com/veracode/vosp/api/wrapper/vosp-api-wrapper-java/24.4.13.0/vosp-api-wrapper-java-24.4.13.0.jar -O veracode-wrapper.jar
+      run: curl --silent --show-error --fail https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/24.4.13.0/vosp-api-wrappers-java-24.4.13.0.jar
+    - name: Download rename wrapper
+      run: mv vosp-api-wrappers-java-24.4.13.0.jar  veracode-wrapper.jar
 
 #this is for your proxy settings which we should be able to pass through to the veracode command. Configure accordingly and be sure the environment variable listed is created. 
     - name: Set up Proxy Environment Variable
