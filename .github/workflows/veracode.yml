@@ -44,9 +44,9 @@ jobs:
     - run: unzip -o pipeline-scan-LATEST.zip
 #downloading the API wrapper, I updated this to be the most up to date version. It'll output as "veracode-wrapper.jar" 
     - name: Download Veracode Java API Wrapper
-      run: curl --silent --show-error --fail https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/24.4.13.0/vosp-api-wrappers-java-24.4.13.0.jar
-    - name: Download rename wrapper
-      run: mv vosp-api-wrappers-java-24.4.13.0.jar  veracode-wrapper.jar
+      run: wget -O java-api-wrapper.zip https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/24.4.13.0/vosp-api-wrappers-java-24.4.13.0.jar
+    # - name: Download rename wrapper
+    #   run: mv vosp-api-wrappers-java-24.4.13.0.jar  veracode-wrapper.jar
 
 #this is for your proxy settings which we should be able to pass through to the veracode command. Configure accordingly and be sure the environment variable listed is created. 
     - name: Set up Proxy Environment Variable
@@ -67,8 +67,8 @@ jobs:
     - name: Run Veracode Upload and Scan
       run: |
         java -jar veracode-wrapper.jar -action uploadandscan -vid ${{ secrets.VERACODE_API_ID }} -vkey ${{ secrets.VERACODE_API_KEY }} -appname myapp -createprofile true -criticality High -version ${{ github.sha }} -filepath ./
-      env:
-        https_proxy: ${{ env.https_proxy }}
+      # env:
+      #   https_proxy: ${{ env.https_proxy }}
     # - run: java -jar pipeline-scan.jar --veracode_api_id "${{secrets.VERACODE_API_ID}}" --veracode_api_key "${{secrets.VERACODE_API_KEY}}" --fail_on_severity="Very High, High" --file veracode-scan-target.zip --verbose=true #-appname myapp -createprofile true
       continue-on-error: true
     - name: Convert pipeline scan output to SARIF format
