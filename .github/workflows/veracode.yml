@@ -51,7 +51,7 @@ jobs:
 #this is for your proxy settings which we should be able to pass through to the veracode command. Configure accordingly and be sure the environment variable listed is created. 
     - name: Set up Proxy Environment Variable
       run: |
-        echo "https_proxy=http://127.0.0.1:8080" >> $GITHUB_ENV
+        # echo "https_proxy=http://127.0.0.1:8080" >> $GITHUB_ENV
     - uses: actions/setup-java@v3
       with:
         java-version: 11
