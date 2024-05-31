@@ -68,8 +68,8 @@ jobs:
       run: |
         java -jar pipeline-scan.jar --veracode_api_id "${{secrets.VERACODE_API_ID}}" --veracode_api_key "${{secrets.VERACODE_API_KEY}}" --fail_on_severity="Very High, High" --file veracode-scan-target.zip --project_name=mycustomapp --app_id=2157406 --verbose=true
         # java -jar veracode-wrapper.jar -action uploadandscan -vid ${{ secrets.VERACODE_API_ID }} -vkey ${{ secrets.VERACODE_API_KEY }} -appname myapp -createprofile true -criticality High -version ${{ github.sha }} -filepath ./
-      # env:
-      #   https_proxy: ${{ env.https_proxy }}
+      env:
+        https_proxy: user1:passw0rd@123.231.56.23:1234
    
       continue-on-error: true
     - name: Convert pipeline scan output to SARIF format
