@@ -55,7 +55,7 @@ jobs:
     - uses: actions/setup-java@v3
       with:
         java-version: 11
-        # distribution: 'temurin'
+        distribution: 'temurin'
    #calling on the veracode-wrapper.jar
 #vid and vkey are variables that need to be configured as secrets in GH. You can find these on the Veracode platform home page. There is a workflow button on the left "API Credentials". You can swap out the variable name and customize, you know how variables work.
 #appname is the name of the app as you want to see it in the platform
